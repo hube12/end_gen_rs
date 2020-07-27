@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <link rel="stylesheet" href="styles/normalize.css">
+    <link rel="stylesheet" href="styles/skeleton.css">
+    <link rel="stylesheet" href="styles/style.css">
+    <title>End gen in rust</title>
+  </head>
+  <body>
+    <main>
+      <div class="controls">
+        <h1>Coords =</h1>
+        <div>
+          <label for="x">X</label>
+          <input type="number" name="x" id="x" value="-0.15" step="0.001">
+        </div>
+        <div>
+          <label for="z">Z</label>
+          <input type="number" name="z" id="z" value="0.65" step="0.001">
+        </div>
+        <button class="button-primary" id="render">render</button>
+      </div>
+      <canvas id="drawing" width="600" height="600"></canvas>
+    </main>
+  </body>
+</html>
