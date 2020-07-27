@@ -64,34 +64,6 @@ impl Random {
         ((self.seed & mask(48)) >> (48 - bits)) as i32
     }
 
-    // (s * A) + C
-    // ((s * A) + C) * A + C
-    // s*A*A + C*A + C
-    // s*A*A*A + C*A*A + C*A + C
-    // Equivalent to n calls to next
-    pub fn next_n_calls(&mut self, n: u64) {
-        // I doubt this function will ever be useful, but
-        // at least I had fun making it.
-        match n {
-            0 => return,
-            1 => {
-                self.next(0);
-                return;
-            }
-            _ => {}
-        }
-        let c = lcg_const::C;
-        let a = lcg_const::A;
-        // Modular multiplicative inverse of a-1
-        let a_1_inv = lcg_const_extra::INV_A_1;
-        let an = pow_wrapping(a, n);
-        //let aes = (an - 1) / (a - 1);
-        // a % 4 == 1, so (a^n - 1) % 4 == 0
-        let aes = (an.wrapping_sub(1) >> 2).wrapping_mul(a_1_inv);
-        let caa = c.wrapping_mul(aes);
-        self.seed = self.seed.wrapping_mul(an).wrapping_add(caa);
-    }
-
     pub fn next_int(&mut self) -> i32 {
         self.next(32)
     }

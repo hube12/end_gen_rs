@@ -1,11 +1,9 @@
 mod simplex_noise;
 mod lcg;
 
-use std::ops::Add;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::Clamped;
 use web_sys::{CanvasRenderingContext2d, ImageData};
-use crate::lcg::Random;
 
 #[wasm_bindgen]
 pub fn draw(
@@ -23,9 +21,9 @@ fn get_picture(width: u32, height: u32) -> Vec<u8> {
     let mut data = Vec::new();
     for x in 0..width {
         for y in 0..height {
-            data.push((iter_index / 4) as u8);
-            data.push((iter_index / 2) as u8);
-            data.push(iter_index as u8);
+            data.push((x / 4) as u8);
+            data.push((y / 2) as u8);
+            data.push(x as u8);
             data.push(255);
         }
     }
