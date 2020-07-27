@@ -1,4 +1,4 @@
-# End Generatrion
+# End Generation
 
 
 You can build the example locally with:
