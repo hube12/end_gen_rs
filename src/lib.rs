@@ -1,3 +1,5 @@
+mod Mth;
+mod end_gen;
 mod simplex_noise;
 mod lcg;
 

@@ -67,7 +67,7 @@ impl SimplexNoise {
         res
     }
 
-    pub fn get_value_2d(&mut self, x: f64, z: f64) -> f64 {
+    pub fn get_value_2d(&self, x: f64, z: f64) -> f64 {
         let hairy_factor: f64 = (x + z) * F2;
         let temperature_x: i32 = (x + hairy_factor).floor() as i32;
         let temperature_z: i32 = (z + hairy_factor).floor() as i32;
@@ -100,7 +100,7 @@ impl SimplexNoise {
         let t2: f64 = SimplexNoise::get_corner_noise3d(gi2, x2, y2, 0.0f64, 0.5f64);
         70.0f64 * (t0 + t1 + t2)
     }
-    pub fn get_value_3d(&mut self, x: f64, y: f64, z: f64) -> f64 {
+    pub fn get_value_3d(&self, x: f64, y: f64, z: f64) -> f64 {
         let skew_factor: f64 = (x + y + z) * F3; // F3 is 1/3
         // Skew the input space to determine which simplex cell we're in
         let i: i32 = (x + skew_factor).floor() as i32;

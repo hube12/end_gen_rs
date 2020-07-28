@@ -1,6 +1,10 @@
-pub mod lcg_const {
-    pub const A: u64 = 0x5DEECE66D;
-    pub const C: u64 = 0xB;
+pub const JAVA_LCG: LCG = LCG { multiplier: 0x5DEECE66D, addend: 0xB };
+pub const END_LCG: LCG = LCG { multiplier: 257489430523441, addend: 184379205320524 };
+
+#[derive(Copy, Clone, Debug)]
+pub struct LCG {
+    multiplier: u64,
+    addend: u64,
 }
 
 // Constants used to reverse operations
@@ -18,23 +22,34 @@ pub const fn mask(n: u8) -> u64 {
 #[derive(Copy, Clone, Debug)]
 pub struct Random {
     seed: u64,
+    lcg: LCG,
 }
 
 impl Random {
     pub fn with_seed(s: u64) -> Random {
-        let mut r = Random { seed: 0 };
+        let mut r = Random { seed: 0, lcg: JAVA_LCG };
+        r.set_seed(s);
+        r
+    }
+    pub fn with_seed_and_lcg(s: u64, lcg: LCG) -> Random {
+        let mut r = Random { seed: 0, lcg };
         r.set_seed(s);
         r
     }
 
     pub fn with_raw_seed(s: u64) -> Random {
-        let mut r = Random { seed: 0 };
+        let mut r = Random { seed: 0, lcg: JAVA_LCG };
+        r.set_raw_seed(s);
+        r
+    }
+    pub fn with_raw_seed_and_lcg(s: u64, lcg: LCG) -> Random {
+        let mut r = Random { seed: 0, lcg };
         r.set_raw_seed(s);
         r
     }
 
     pub fn set_seed(&mut self, s: u64) {
-        self.seed = s ^ lcg_const::A;
+        self.seed = s ^ self.lcg.multiplier;
     }
 
     pub fn set_raw_seed(&mut self, s: u64) {
@@ -42,21 +57,21 @@ impl Random {
     }
 
     pub fn get_seed(&self) -> u64 {
-        (self.seed ^ lcg_const::A) & mask(48)
+        (self.seed ^ self.lcg.multiplier) & mask(48)
     }
 
     pub fn get_raw_seed(&self) -> u64 {
         self.seed & mask(48)
     }
 
-    pub fn next(&mut self, bits: u8) -> i32 {
-        self.seed = Self::next_state(self.seed);
-        ((self.seed & mask(48)) >> (48 - bits)) as i32
+    pub fn next_state(&mut self) -> Random {
+        self.seed = self.seed.wrapping_mul(self.lcg.multiplier).wrapping_add(self.lcg.addend);
+        *self
     }
 
-    // s * A + C
-    pub fn next_state(s: u64) -> u64 {
-        s.wrapping_mul(lcg_const::A).wrapping_add(lcg_const::C)
+    pub fn next(&mut self, bits: u8) -> i32 {
+        self.next_state();
+        ((self.seed & mask(48)) >> (48 - bits)) as i32
     }
 
     // Returns the same as the last call to next
@@ -69,9 +84,6 @@ impl Random {
     }
 
     pub fn next_int_n(&mut self, n: i32) -> i32 {
-        if n == 10 {
-            return self.next_int_n_10();
-        }
         if !(n > 0) {
             panic!("In JavaRng::next_int_n, n should be greater than zero.");
         }
@@ -92,19 +104,6 @@ impl Random {
         }
 
         val
-    }
-
-    pub fn next_int_n_10(&mut self) -> i32 {
-        let mut bits;
-        loop {
-            bits = self.next(31);
-            // Check for modulo bias
-            let limit = (1u32 << 31) / 10 * 10; // last multiple of 10 < 2^31
-            if bits < limit as i32 {
-                break;
-            }
-        }
-        bits % 10
     }
 
     pub fn next_long(&mut self) -> i64 {
@@ -134,6 +133,6 @@ impl Random {
 
     // The previous internal state of the prng, not the seed
     pub fn previous_state(s: u64) -> u64 {
-        (s.wrapping_sub(lcg_const::C)).wrapping_mul(lcg_const_extra::INV_A) & mask(48)
+        (s.wrapping_sub(JAVA_LCG.addend)).wrapping_mul(lcg_const_extra::INV_A) & mask(48)
     }
 }
