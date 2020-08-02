@@ -1,7 +1,8 @@
-mod Mth;
 mod end_gen;
-mod simplex_noise;
-mod lcg;
+mod gen_source;
+pub mod lcg_utilities;
+pub mod noise_functions;
+pub mod utilities;
 
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::Clamped;
@@ -31,4 +32,7 @@ fn get_picture(width: u32, height: u32) -> Vec<u8> {
     }
     data
 }
+#[test]
+fn basic_test(){
 
+}

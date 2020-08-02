@@ -13,6 +13,15 @@ pub mod math {
         return f1;
     }
 
+    pub fn floor_mod(x: i64, y: i64) -> i64 {
+        let mut modulo: i64 = x % y;
+        // if the signs are different and modulo not zero, adjust result
+        if (x ^ y) < 0 && modulo != 0 {
+            modulo += y;
+        }
+        modulo
+    }
+
     pub fn sqrt(f: f32) -> f32 {
         return f.sqrt();
     }

@@ -1,6 +1,7 @@
-use crate::lcg::{Random, END_LCG};
-use crate::simplex_noise::SimplexNoise;
-use crate::Mth::math;
+use crate::noise_functions::simplex_noise::SimplexNoise;
+use crate::lcg_utilities::lcg::{Random, END_LCG};
+use crate::noise_functions::voronoi::get_fuzzy_positions;
+use crate::utilities::math::math;
 
 #[derive(Copy, Clone)] // remove Debug for 256 size static array
 pub struct EndGen {
@@ -25,6 +26,11 @@ impl EndGen {
         let seed: u64 = Random::with_seed_and_lcg(seed, END_LCG).next_state().get_raw_seed();
         let noise: SimplexNoise = SimplexNoise::init(Random::with_raw_seed(seed));
         EndGen { seed, x, z, width, height, noise }
+    }
+
+    pub fn get_final_biome(&mut self, x: i32, z: i32) -> EndBiomes {
+        let (xx, _, zz): (i32, i32, i32) = get_fuzzy_positions(self.seed as i64, x, 0, z);
+        return self.get_biome(xx, zz);
     }
     pub fn get_biome(&mut self, x: i32, z: i32) -> EndBiomes {
         let chunk_x: i32 = x >> 2;

@@ -1,4 +1,4 @@
-use crate::lcg::Random;
+use crate::lcg_utilities::lcg::Random;
 
 pub const F2: f64 = 0.3660254037844386;
 pub const G2: f64 = 0.21132486540518713;
@@ -174,9 +174,9 @@ impl SimplexNoise {
         let x1: f64 = x0 - i1 as f64 + G3; // Offsets for second corner in (x,y,z) coords
         let y1: f64 = y0 - j1 as f64 + G3;
         let z1: f64 = z0 - k1 as f64 + G3;
-        let x2: f64 = x0 - i2 as f64 + 2.0f64 * G3; // Offsets for third corner in (x,y,z) coords
-        let y2: f64 = y0 - j2 as f64 + 2.0f64 * G3;
-        let z2: f64 = z0 - k2 as f64 + 2.0f64 * G3;
+        let x2: f64 = x0 - i2 as f64 + F3; // Offsets for third corner in (x,y,z) coords
+        let y2: f64 = y0 - j2 as f64 + F3;
+        let z2: f64 = z0 - k2 as f64 + F3;
         let x3: f64 = x0 - 1.0f64 + 3.0f64 * G3; // Offsets for last corner in (x,y,z) coords
         let y3: f64 = y0 - 1.0f64 + 3.0f64 * G3;
         let z3: f64 = z0 - 1.0f64 + 3.0f64 * G3;
